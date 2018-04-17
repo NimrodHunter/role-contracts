@@ -1,0 +1,13 @@
+node_modules
+*.log
+yarn-error.log
+notes.txt
+.DS_Store
+seed
+coverage.json
+test/.geth/geth
+test/.geth/history
+allFiredEvents
+.env
+build
+coverage
