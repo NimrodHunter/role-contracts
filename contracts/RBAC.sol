@@ -1,7 +1,6 @@
 pragma solidity ^0.4.21;
 
 import "zeppelin-solidity/contracts/ownership/rbac/Roles.sol";
-import "./BytesToUint256.sol";
 
 /**
  * @title RBAC (Role-Based Access Control)
@@ -16,7 +15,6 @@ import "./BytesToUint256.sol";
  */
 contract RBAC {
     using Roles for Roles.Role;
-    using BytesToUint256 for bytes;
 
     enum Users {ADMIN, PLATFORM ,ISSUER, TARDER}
 
@@ -82,13 +80,13 @@ contract RBAC {
 
     /**
      * @dev modifier to scope access to a set of roles (uses msg.sender as addr)
-     * @param rolNumbers the names of the roles to scope access to
+     * @param roleNumbers the names of the roles to scope access to
      * // reverts
      */
-    modifier onlyRoles(bytes rolNumbers) {
+    modifier onlyRoles(bytes roleNumbers) {
         bool hasAnyRole = false;
-        for (uint256 i = 0; i < rolNumbers.length; i++) {
-            if (hasRole(msg.sender, rolNumbers.toUint(i))) {
+        for (uint256 i = 0; i < roleNumbers.length; i++) {
+            if (hasRole(msg.sender, uint(roleNumbers[i]))) {
                 hasAnyRole = true;
                 break;
             }
