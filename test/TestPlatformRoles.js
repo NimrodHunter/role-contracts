@@ -3,50 +3,38 @@ import expectThrow from './helpers/expectThrow';
 const PlatformRoles = artifacts.require('PlatformRoles');
 
 contract('Platform Roles', (accounts) => {
-
   let rolesContract;
+  let admin = accounts[0];
   let platform = accounts[1];
   const Roles = {
-    ADMIN: 0,
-    PLATFORM: 1,
-    ISSUER: 2,
-    TRADER: 3,
+    ADMIN: '0x01',
+    PLATFORM: '0x02',
+    ISSUER: '0x04',
+    TRADER: '0x08',
   };
 
-  before(async () => {
-    rolesContract = await PlatformRoles.new(platform);
+  beforeEach(async () => {
+    rolesContract = await PlatformRoles.new(admin, platform);
   });
 
   it('should add an user as admin', async () => {
     const admin2 = accounts[9];
-    const tx = await rolesContract.adminAddRole(admin2, Roles.ADMIN);
-    const isAdmin = await rolesContract.hasRole.call(admin2, Roles.ADMIN);
+    const tx = await rolesContract.platformSetRole(admin2, Roles.ADMIN);
+    const isAdmin = await rolesContract.hasRoles.call(admin2, Roles.ADMIN);
     assert.equal(isAdmin, true, 'should be admin');
     
     // Test event
     const logs = tx.logs[0];
 
-    assert.equal(logs.event, 'RoleAdded');
-    assert.equal(logs.args.addr, admin2);
-    assert.equal(logs.args.rolNumber, Roles.ADMIN);
+    assert.equal(logs.event, 'RoleSetted');
+    assert.equal(logs.args.user, admin2);
+    assert.equal(logs.args.rolNumber.substring(0,4), Roles.ADMIN);
   });
 
   it('should not add an user as admin', async () => {
     const admin2 = accounts[9];
-
-    it('platfrom should not add an user as admin from adminAddRole', async () => {
-      await expectThrow(rolesContract.adminAddRole(admin2, Roles.ADMIN, {from: platform}));
-    });
-
-    it('platfrom should not add an user as admin from platformAddRole', async () => {
-        await expectThrow(rolesContract.platformAddRole(admin2, Roles.ADMIN, {from: platform}));
-    });
-
-    
+    await expectThrow(rolesContract.platformSetRole(admin2, Roles.ADMIN, {from: platform}));
     
   });
-
-
-
 
 });

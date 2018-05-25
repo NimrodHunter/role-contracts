@@ -1,4 +1,4 @@
-pragma solidity 0.4.21;
+pragma solidity 0.4.23;
 
 import '../../contracts/UseRoles.sol';
 
@@ -7,20 +7,20 @@ contract ExampleUseRolesMock is UseRoles {
     bool public issuerCallCounter;
     bool public openCallCounter;
 
-    function ExampleUseRolesMock(address rolesContract)
+    constructor(address rolesContract)
         public 
         UseRoles(rolesContract)
     {}
 
-    function traderCall() public onlyRole(3) {
+    function traderCall() public onlyRoles(hex"0b") {
         traderCallCounter = true;
     }
 
-    function issuerCall() public onlyRole(2) {
+    function issuerCall() public onlyRoles(hex"07") {
         issuerCallCounter = true;
     }
 
-    function openCall() public onlyRoles(hex"0203") {
+    function openCall() public onlyRoles(hex"0f") {
         openCallCounter = true;
     }
     

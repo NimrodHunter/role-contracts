@@ -7,23 +7,24 @@ contract('Use Platform Roles', (accounts) => {
 
   let rolesContract;
   let useRoleContract;
+  let admin = accounts[0];
   let platform = accounts[1];
   let trader = accounts[2];
   let issuer = accounts[3];
   let traderIssuer = accounts[4];
   const Roles = {
-    ADMIN: 0,
-    PLATFORM: 1,
-    ISSUER: 2,
-    TRADER: 3,
+    ADMIN: '0x01',
+    PLATFORM: '0x02',
+    ISSUER: '0x04',
+    TRADER: '0x08',
   };
 
   beforeEach(async () => {
-    rolesContract = await PlatformRoles.new(platform);
-    await rolesContract.adminAddRole(trader, Roles.TRADER);
-    await rolesContract.adminAddRole(issuer, Roles.ISSUER);
-    await rolesContract.adminAddRole(traderIssuer, Roles.ISSUER);
-    await rolesContract.adminAddRole(trader, Roles.TRADER);
+    rolesContract = await PlatformRoles.new(admin, platform);
+    await rolesContract.platformSetRole(trader, Roles.TRADER);
+    await rolesContract.platformSetRole(issuer, Roles.ISSUER);
+    await rolesContract.platformSetRole(traderIssuer, Roles.ISSUER);
+    await rolesContract.platformSetRole(trader, Roles.TRADER);
     useRoleContract = await ExampleUseRolesMock.new(rolesContract.address);
   });
 
